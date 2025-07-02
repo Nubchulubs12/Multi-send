@@ -8,8 +8,9 @@ public class Main {
 
      EmailSender sender = new EmailSender(yourEmail, yourAppPassword);
 
+//add emails to the list here
      List<String> recipients = List.of(
-             "fuelup727@gmail.com"
+             ""
 
 
              );
