@@ -10,7 +10,8 @@ public class Main {
 
 //add emails to the list here
      List<String> recipients = List.of(
-             ""
+             "nick.kuczka@gmail.com",
+             "fuelup727@gmail.com"
 
 
              );

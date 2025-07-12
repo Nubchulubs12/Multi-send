@@ -38,14 +38,17 @@ public class EmailSender {
         Transport.send(message);
         System.out.println("Email sent to " + to);
     }
-    public void sendBatchEmails(List<String> recipients, String subject, String text) {
+    public String sendBatchEmails(List<String> recipients, String subject, String text) {
+       StringBuilder results = new StringBuilder();
         for (String to : recipients) {
             try {
                 sendEmail(to, subject, text);
+                results.append("Email sent to ").append(to).append("\n");
             }catch (MessagingException e) {
-                System.err.println("Failed to send to " + to + ": " + e.getMessage());
+                results.append("Failed to send to ").append(to).append(": ").append(e.getMessage()).append("\n");
             }
         }
+        return results.toString();
 
     }
 }
