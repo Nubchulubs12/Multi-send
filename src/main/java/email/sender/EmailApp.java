@@ -24,6 +24,8 @@ public class EmailApp extends Application {
 
         Button addEmailButton = new Button("Add Email");
 
+        Button deleteEmailButton = new Button("Delete Email");
+
         ListView<CheckBox> emailListView = new ListView<>();
         loadEmailsFromFiles(emailListView);
 
@@ -35,7 +37,12 @@ public class EmailApp extends Application {
         messageArea.setPromptText("Message body");
 
         Button sendButton = new Button("Send Emails");
-        Label statusLabel = new Label();
+
+        TextArea statusLogArea = new TextArea();
+        statusLogArea.setEditable(false);
+        statusLogArea.setWrapText(true);
+        statusLogArea.setPromptText("Results will appear here...");
+        statusLogArea.setPrefHeight(150);
 
         addEmailButton.setOnAction(e -> {
             String newEmail = newEmailField.getText().trim();
@@ -46,6 +53,15 @@ public class EmailApp extends Application {
                 saveEmailsToFile(emailListView);
 
             }
+        });
+
+        deleteEmailButton.setOnAction(e->{
+            List<CheckBox> toRemove = emailListView.getItems().stream()
+                    .filter(CheckBox::isSelected)
+                    .collect(Collectors.toList());
+
+            emailListView.getItems().removeAll(toRemove);
+            saveEmailsToFile(emailListView);
         });
 
         sendButton.setOnAction(e -> {
@@ -60,13 +76,14 @@ public class EmailApp extends Application {
                     .collect(Collectors.toList());
 
             if (recipients.isEmpty()) {
-                statusLabel.setText(" No recipients selected.");
+                statusLogArea.setText(" No recipients selected.");
                 return;
             }
 
             EmailSender sender = new EmailSender(email, appPassword);
             String resultLog = sender.sendBatchEmails(recipients, subject, message);
-            statusLabel.setText(resultLog);
+            statusLogArea.setText(resultLog);
+
 
         });
 
@@ -79,14 +96,14 @@ public class EmailApp extends Application {
                 subjectField,
                 messageArea,
                 sendButton,
-                statusLabel);
+                statusLogArea);
         VBox sendTabContent = new VBox(10,
                 emailField,
                 appPasswordField,
                 subjectField,
                 messageArea,
                 sendButton,
-                statusLabel);
+                statusLogArea);
         sendTabContent.setStyle("-fx-padding: 15;");
 
         Tab sendTab = new Tab("Send Emails", sendTabContent);
@@ -96,6 +113,7 @@ public class EmailApp extends Application {
         VBox manageTabContent = new VBox(10,
                 newEmailField,
                 addEmailButton,
+                deleteEmailButton,
                 emailListView);
         manageTabContent.setStyle("-fx-padding: 15;");
 
